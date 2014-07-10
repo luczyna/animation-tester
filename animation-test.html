@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>test-animation</title>
+	<link rel="stylesheet" type="text/css" href="style.css">
+	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,700,300italic' rel='stylesheet' type='text/css'>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+</head>
+<body>
+	<div class="wrap">
+		<div class="controls">
+			<span class="control" id="playback" data-current="paused">play</span>
+			<span class="control" id="settings">settings</span>
+		</div>
+
+		<img class="image" data-frame="0" src="http://img2.wikia.nocookie.net/__cb20130727194242/naval-ops/images/6/61/Full_image_placeholder.jpg" />
+
+		<div class="information" id="info">
+			<span class="label">drop your files</span>
+			<span class="input" id="filedump">in here</span>
+			<ul class="file-list" id="filelist"></ul>
+
+			<span class="label">frame rate</span>
+			<span class="input" contenteditable="true" id="fps">29.97</span>
+
+			<span class="label">repeat?</span>
+			<input id="repeat" type="checkbox" name=" " class="input" />
+
+			<p class="confirm" id="accept">apply</p>
+		</div>			
+
+	</div>
+
+	<!--	scripts 	-->
+	<script src="script.js" type="text/javascript"></script>
+</body>
+</html>

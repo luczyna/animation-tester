@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>test-animation</title>
+	<link href='http://fonts.googleapis.com/css?family=Source+Sans+Pro:300,700,300italic' rel='stylesheet' type='text/css'>
+	<style>
+	body,html{margin:0;padding:0;font-size:100%;background:#F1F1F1}h1,h2,h3,h4,h5,h6{font-family:'Source Sans Pro',sans-serif;letter-spacing:1px}div,p,span{font-family:'Source Sans Pro',sans-serif}::selection{color:#fff;background-color:#98fb98}::-moz-selection{color:#000;background-color:#98fb98}.wrap{width:95%;max-width:40em;margin:1em auto;position:relative}.controls{background:#3d3d3d;color:#fff;padding:.5em;text-align:right}.control{margin:0 .25em;cursor:pointer}img{width:100%;margin:0 auto;display:block}.information{position:absolute;left:-5%;top:4em;width:100%;padding:1em 5%;background:rgba(0,0,0,.8);color:#fff;display:none}.label{display:inline-block;width:20%;margin:0 5% 0 0;clear:both}.input{display:inline-block;width:70%;margin:0 0 1em;padding:.5em .5%;background:#5f9ea0}.file-list{margin:0 0 1em;padding:0 0 0 25.5%}#filedump{height:4em;background:#5f9ea0;width:69%;padding:.5em .5%}.input[type=checkbox]{width:auto;margin:0 0 0 -.1em}.confirm{text-align:center;background:tomato;padding:.25em;curosr:pointer;-o-transition:background .3s ease-out;-ms-transition:background .3s ease-out;-moz-transition:background .3s ease-out;-webkit-transition:background .3s ease-out;transition:background .3s ease-out}.confirm:hover{background:#98fb98}
+	</style>
+	<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+</head>
+<body>
+	<div class="wrap">
+		<div class="controls">
+			<span class="control" id="playback" data-current="paused">play</span>
+			<span class="control" id="settings">settings</span>
+		</div>
+
+		<img class="image" data-frame="0" src="http://img2.wikia.nocookie.net/__cb20130727194242/naval-ops/images/6/61/Full_image_placeholder.jpg" />
+
+		<div class="information" id="info">
+			<span class="label">drop your files</span>
+			<span class="input" id="filedump">in here</span>
+			<ul class="file-list" id="filelist"></ul>
+
+			<span class="label">frame rate</span>
+			<span class="input" contenteditable="true" id="fps">29.97</span>
+
+			<span class="label">repeat?</span>
+			<input id="repeat" type="checkbox" name=" " class="input" />
+
+			<p class="confirm" id="accept">apply</p>
+		</div>			
+
+	</div>
+
+	<!--	scripts 	-->
+	<script src="script.js" type="text/javascript">
+		function hideInfo(){if(getFrameRate()){willItRepeat(),gifInit();var a=1,b=setInterval(function(){.1>a&&(info.style.opacity="0",info.style.filter="alpha(opacity=0)",info.style.display="none",clearInterval(b),closer.removeEventListener("click",hideInfo),controlSettings.addEventListener("click",showInfo)),info.style.opacity=a,info.style.filter="alpha(opacity="+100*a+")",a-=.1*a},15)}}function showInfo(){var a=.01;info.style.opacity=0,info.style.filter="alpha(opacity=0)",info.style.display="block";var b=setInterval(function(){a>.9&&(info.style.opacity=1,info.style.filter="alpha(opacity=100)",clearInterval(b),controlSettings.removeEventListener("click",showInfo),closer.addEventListener("click",hideInfo)),info.style.opacity=a,info.style.filter="alpha(opacity="+100*a+")",a+=1.5*a},15)}function getFrameRate(){var a=document.getElementById("fps").textContent;return a.match(/[a-zA-Z;-]/)?(window.alert("please enter a proper value for the Frame Rate, without spaces or letters"),!1):(framerate=a,a)}function willItRepeat(){var a=document.getElementById("repeat");repeat=a.checked?!0:!1}function handleFileSelect(a){a.stopPropagation(),a.preventDefault();var b=a.dataTransfer.files,c=document.getElementById("filelist");c.innerHTML="",images.length=0;for(var e,d=0;e=b[d];d++){var f=new FileReader;f.onload=function(a){return function(b){var d=document.createElement("li");d.textContent=a.name,c.appendChild(d),images.push(b.target.result)}}(e),f.readAsDataURL(e)}}function handleDragOver(a){a.stopPropagation(),a.preventDefault(),a.dataTransfer.dropEffect="copy"}function gifInit(){image.src=images[0],controlPlayback.addEventListener("click",playAnimation)}function playAnimation(){var a=1e3*(1/framerate);animate=window.setInterval(changeFrame,a),controlPlayback.textContent="pause",controlPlayback.setAttribute("data-current","playing"),controlPlayback.removeEventListener("click",playAnimation),controlPlayback.addEventListener("click",pauseAnimation)}function changeFrame(){var b,a=parseInt(image.getAttribute("data-frame"),10);if(a+1<images.length)b=a+1;else{if(a+1!==images.length||!repeat)return window.clearInterval(animate),void 0;b=0}image.src=images[b],image.setAttribute("data-frame",b)}function pauseAnimation(){window.clearInterval(animate),controlPlayback.textContent="play",controlPlayback.setAttribute("data-current","paused"),controlPlayback.removeEventListener("click",pauseAnimation),controlPlayback.addEventListener("click",playAnimation)}var controlPlayback=document.getElementById("playback"),controlSettings=document.getElementById("settings"),image=document.getElementsByTagName("img")[0],info=document.getElementById("info");closer=document.getElementById("accept"),dropzone=document.getElementById("filedump");var playbackStatus,directory,framerate,repeat,animate,images=[];controlSettings.addEventListener("click",showInfo),dropzone.addEventListener("dragover",handleDragOver,!1),dropzone.addEventListener("drop",handleFileSelect,!1);
+	</script>
+</body>
+</html>

@@ -1,0 +1,105 @@
+/*		G I F    A N I M A T I O N    T E S T I N G 		*/
+
+html, body {
+	margin: 0;
+	padding: 0;
+	font-size: 100%;
+	background: #F1F1F1;
+}
+
+h1, h2, h3, h4, h5, h6 { font-family: 'Source Sans Pro', sans-serif; letter-spacing: 1px; }
+p, span, div {	font-family: 'Source Sans Pro', sans-serif; }
+
+::selection {
+	color: white;
+	background-color: palegreen;
+}
+::-moz-selection {
+	color: black;
+	background-color: palegreen;
+}
+
+.wrap {
+	width: 95%;
+	max-width: 40em;
+	margin: 1em auto;
+	position: relative;
+}
+
+.controls {
+	background: #3d3d3d;
+	color: white;
+	padding: 0.5em;
+	text-align: right;
+}
+
+.control {
+	margin: 0 0.25em;
+	cursor: pointer;
+}
+
+img {
+	width: 100%;
+	margin: 0;
+	margin: 0 auto;
+	display: block;
+}
+
+.information {
+	position: absolute;
+	left: -5%;
+	top: 4em;
+	width: 100%;
+	padding: 1em 5%;
+	background: rgba(0, 0, 0, 0.8);
+	color: white;
+	display: none;
+}
+
+.label {
+	display: inline-block;
+	width: 20%;
+	margin: 0 5% 0 0;
+	clear: both;
+}
+
+.input {
+	display: inline-block;
+	width: 70%;
+	margin: 0 0 1em;
+	padding: 0.5em 0.5%;
+	background: cadetblue;
+}
+
+.file-list {
+	margin: 0 0 1em;
+	padding: 0 0 0 25.5%;
+}
+
+#filedump {
+	height: 4em;
+	background: cadetblue;
+	width: 69%;
+	padding: 0.5em 0.5%;
+}
+
+.input[type="checkbox"] {
+	width: auto;
+	margin: 0 0 0 -0.1em;
+}
+
+.confirm {
+	text-align: center;
+	background: tomato;
+	padding: 0.25em;
+	curosr: pointer;
+	-o-transition: background 0.3s ease-out;
+	-ms-transition: background 0.3s ease-out;
+	-moz-transition: background 0.3s ease-out;
+	-webkit-transition: background 0.3s ease-out;
+	transition: background 0.3s ease-out;
+}
+
+.confirm:hover {
+	background: palegreen;
+}
