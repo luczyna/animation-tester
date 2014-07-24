@@ -1,10 +1,12 @@
-/* define our elements that we will interact with */
-var controlPlayback = document.getElementById('playback'),
-    controlSettings = document.getElementById('settings'),
-    image           = document.getElementsByTagName('img')[0],
-    info            = document.getElementById('info')
-    closer          = document.getElementById('accept'),
-    dropzone        = document.getElementById('filedump');
+/* define our DOM elements that we will interact with */
+var d = {
+    controlPlayback: document.getElementById('playback'),
+    controlSettings: document.getElementById('settings'),
+    image          : document.getElementsByTagName('img')[0],
+    info           : document.getElementById('info'),
+    closer         : document.getElementById('accept'),
+    dropzone       : document.getElementById('filedump')
+};
 
 /* define our variables that will store our information */
 var playbackStatus,
@@ -14,6 +16,13 @@ var playbackStatus,
     animate,
     images = [];
 
+/* this will get the ball rolling when the app is loaded */
+d.controlSettings.addEventListener('click', showInfo);
+
+
+
+
+
 /* hide the information panel */
 function hideInfo() {
     //first check if we can use the information provided
@@ -21,63 +30,26 @@ function hideInfo() {
         return;
     }
     willItRepeat();
+
     //change the image to the first one available
     gifInit();
 
-    //now set the animation into motion
-    var opacity = 1;
+    //now hide the info and reset any animation
+    d.info.style.display = 'none';
 
-    var timer = setInterval( function() {
-        //stop our fadeOut if it is barely visible
-        if (opacity < 0.1) {
-            info.style.opacity = '0';
-            info.style.filter = 'alpha(opacity=0)';
-            info.style.display = 'none';
-            clearInterval(timer);
-
-            // clean up after ourselves
-            closer.removeEventListener('click', hideInfo);
-            controlSettings.addEventListener('click', showInfo);
-        }
-        //slowly increment the opacity down
-        info.style.opacity = opacity;
-        info.style.filter = 'alpha(opacity=' + (opacity * 100) + ')';
-        
-        //reduce the opacity a little
-        opacity -= opacity * 0.1;
-    }, 15);
+    // clean up after ourselves
+    d.closer.removeEventListener('click', hideInfo);
+    d.controlSettings.addEventListener('click', showInfo);
 }
 
 /* show the information panel */
 function showInfo() {
-    var opacity = 0.01;
-
-    //initiate the animation
-    info.style.opacity = 0;
-    info.style.filter = 'alpha(opacity=0)';
     info.style.display = 'block';
-
-    var timer = setInterval( function() {
-        //stop our fadeOut if it is barely visible
-        if (opacity > 0.90) {
-            info.style.opacity = 1;
-            info.style.filter = 'alpha(opacity=100)';
-            clearInterval(timer);
-
-            // clean up after ourselves
-            controlSettings.removeEventListener('click', showInfo);
-            closer.addEventListener('click', hideInfo);
-        }
-
-        //slowly increment the opacity down
-        info.style.opacity = opacity;
-        info.style.filter = 'alpha(opacity=' + (opacity * 100) + ')';
-        
-        //reduce the opacity a little
-        opacity += opacity * 1.5;
-    }, 15);
+    
+    // clean up after ourselves
+    d.controlSettings.removeEventListener('click', showInfo);
+    d.closer.addEventListener('click', hideInfo);
 }
-controlSettings.addEventListener('click', showInfo);
 
 
 
@@ -89,7 +61,7 @@ function getFrameRate() {
         window.alert('please enter a proper value for the Frame Rate, without spaces or letters');
         return false;
     } else {
-        framerate = rate;
+        framerate = Number(rate);
         return rate;
     }
 }
@@ -103,14 +75,6 @@ function willItRepeat() {
         repeat = false;
     }
 }
-
-// // Check for the various File API support.
-// if (window.File && window.FileReader && window.FileList && window.Blob) {
-//   // Great success! All the File APIs are supported.
-//   console.log('you are able to use the file system');
-// } else {
-//   alert('The File APIs are not fully supported in this browser.');
-// }
 
 function handleFileSelect(evt) {
     evt.stopPropagation();
@@ -164,13 +128,14 @@ function handleDragOver(evt) {
     evt.dataTransfer.dropEffect = 'copy';
 }
 
-dropzone.addEventListener('dragover', handleDragOver, false);
-dropzone.addEventListener('drop', handleFileSelect, false);
+d.dropzone.addEventListener('dragover', handleDragOver, false);
+d.dropzone.addEventListener('drop', handleFileSelect, false);
 
 //change the image to the first of the available set in images
 function gifInit() {
-    image.src = images[0];
-    controlPlayback.addEventListener('click', playAnimation);
+    d.image.src = images[0];
+    d.image.setAttribute('data-frame', 0);
+    d.controlPlayback.addEventListener('click', playAnimation);
 }
 
 function playAnimation() {
@@ -181,14 +146,14 @@ function playAnimation() {
     animate = window.setInterval(changeFrame, t)
     
     //change the event tied to the play button
-    controlPlayback.textContent = 'pause';
-    controlPlayback.setAttribute('data-current', 'playing');
-    controlPlayback.removeEventListener('click', playAnimation);
-    controlPlayback.addEventListener('click', pauseAnimation);
+    d.controlPlayback.textContent = 'pause';
+    d.controlPlayback.setAttribute('data-current', 'playing');
+    d.controlPlayback.removeEventListener('click', playAnimation);
+    d.controlPlayback.addEventListener('click', pauseAnimation);
 }
 
 function changeFrame() {
-    var currentFrame = parseInt(image.getAttribute('data-frame'), 10);
+    var currentFrame = parseInt(d.image.getAttribute('data-frame'), 10);
     var nextFrame;
 
     if (currentFrame + 1 < images.length) {
@@ -196,21 +161,27 @@ function changeFrame() {
     } else if (currentFrame + 1 === images.length && repeat) {
         nextFrame = 0;
     } else {
-        //we've reached the end and we're not supposed to animate
+        //we've reached the end and we're not supposed to repeat
         window.clearInterval(animate);
+        d.controlPlayback.textContent = 'play'
+        d.controlPlayback.setAttribute('data-current', 'paused');
+        d.controlPlayback.removeEventListener('click', pauseAnimation);
+
+        //reset it to the beginning
+        gifInit();
         return;
     }
 
     //change the frame, and update the attribute
-    image.src = images[nextFrame];
-    image.setAttribute('data-frame', nextFrame);
+    d.image.src = images[nextFrame];
+    d.image.setAttribute('data-frame', nextFrame);
 }
 
 function pauseAnimation() {
     window.clearInterval(animate);
 
-    controlPlayback.textContent = 'play';
-    controlPlayback.setAttribute('data-current', 'paused');
-    controlPlayback.removeEventListener('click', pauseAnimation);
-    controlPlayback.addEventListener('click', playAnimation);
+    d.controlPlayback.textContent = 'play';
+    d.controlPlayback.setAttribute('data-current', 'paused');
+    d.controlPlayback.removeEventListener('click', pauseAnimation);
+    d.controlPlayback.addEventListener('click', playAnimation);
 }
